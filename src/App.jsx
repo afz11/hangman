@@ -5,13 +5,9 @@ import { clsx } from 'clsx';
 
 function App() {
   const [currentWord, setCurrentWord] = useState('react')
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz'.toUpperCase().split('');
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz'
   const [guessedLetters, setGuessedLetters] = useState([])
-  const [letterStatuses, setLetterStatuses] = useState(() => 
-    alphabet.reduce((acc, letter) => {
-      acc[letter] = {letter, status: 'not guessed'}; // Set a property on the accumulator object
-      return acc; // Return the updated accumulator
-    }, {}))
+
 
   
   // generate Language elements
@@ -26,20 +22,26 @@ function App() {
     .map((letter, index) => <div className="letter" key={index}>{letter.toLocaleUpperCase()}</div>)
     
     // Generate Alphabets / Buttons
-    const generateAlphabetEl = alphabet.map(letter =>
-      <button 
-        className={clsx(
-          'character', // Base class
-          {
-            correct: letterStatuses[letter]?.status === 'correct', // Add 'correct' class if status is 'correct'
-            incorrect: letterStatuses[letter]?.status === 'incorrect', // Add 'incorrect' class if status is 'incorrect'
-          }
-        )}
+    const generateAlphabetEl = alphabet.split('').map(letter => {
+      const isGuessed = guessedLetters.includes(letter)
+      const isCorrect = isGuessed && currentWord.includes(letter)
+      const isWrong = isGuessed && !currentWord.includes(letter)
+      const className = clsx( 'character', {
+          correct: isCorrect,
+          incorrect: isWrong
+      })
+      
+
+      return (
+        <button 
+        className={className}
         key={letter}
-        value={letter}
-        status={letterStatuses[letter].status}
+        value={letter.toUpperCase()}
         onClick={() => addGuessedLetter(letter)}
-      >{letter}</button>)
+      >{letter.toUpperCase()}</button>
+      )
+    }
+  )
       
       
       function addGuessedLetter(letter) {
@@ -48,18 +50,10 @@ function App() {
           prevGuess :
           [...prevGuess, letter] 
         )
-        checkGuessedLetter(letter)
       }
 
 
-      function checkGuessedLetter(letter) {
-        const secretWord = currentWord.toLocaleUpperCase().split('')
-        secretWord.includes(letter) ?
-        setLetterStatuses((prev) => ({...prev , [letter]: {...prev[letter], status: "correct"} })) :
-        setLetterStatuses(prev => ({...prev, [letter]: {...prev[letter], status: "incorrect"} }))
-      }
 
-      console.log(letterStatuses)
       
       
       return (
