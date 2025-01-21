@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { languages } from './languages';
 import { clsx } from 'clsx';
+import { getFarewellText } from './utils';
 
 
 function App() {
@@ -10,7 +11,11 @@ function App() {
 
   // Derived values
   let wrongGuessCounts = guessedLetters.filter(letter => !currentWord.includes(letter)).length
-  
+  const isGameLost = wrongGuessCounts >= (languages.length - 1)
+  const isGameWon = currentWord.split('').every(letter => guessedLetters.includes(letter))
+  const isGameOver = isGameLost || isGameWon
+  const lastGuessedLetter = guessedLetters[guessedLetters.length - 1]
+  const isLastGuessIncorrect = lastGuessedLetter && !currentWord.includes(lastGuessedLetter)
 
   
   // Static values
@@ -18,11 +23,19 @@ function App() {
 
   
   // generate Language elements
-  const languageElement = languages.map(language => <div className='language' style={{
-    backgroundColor: language.backgroundColor,
-    color: language.color}}
-    key={language.name}
-    >{language.name}</div>)
+  const languageElement = languages.map((language, index) => {
+    const isLost = index < wrongGuessCounts ? true : false
+    const className = clsx ('language', {
+      lost: isLost
+    })
+    return (
+      <div className={className} style={{
+        backgroundColor: language.backgroundColor,
+        color: language.color}}
+        key={language.name}
+        >{language.name}</div>
+    )
+  })
     
     // Generate Current word elements
     const secretWord = currentWord.split('')
@@ -55,14 +68,42 @@ function App() {
           [...prevGuess, letter] 
         )
       }
- 
+
+      function renderGameStatus() {
+        if (!isGameOver && isLastGuessIncorrect) {
+            return <h1 className='info-'>{getFarewellText(languages[wrongGuessCounts - 1].name)}</h1>
+        }
+
+        if (isGameWon) {
+            return (
+                <>
+                    <h2>You win!</h2>
+                    <p>Well done! 🎉</p>
+                </>
+            )
+        } 
+        if (isGameLost) {
+          return (
+            <>
+              <h2>Game over!</h2>
+              <p>You lose! Better start learning Assembly 😭</p>
+            </>
+          );
+        }
+        return null
+    }
+
       return (
     <>
       <header>
         <h1>Assembly: Endgame</h1>
         <p>Guess the word in under 8 attempts to keep the programming world safe from Assembly!</p>
-        <div className="info">
-          “Farewell HTML & CSS” 🫡 
+        <div className={clsx("info", {
+          won: isGameWon,
+          lost: isGameLost,
+          farewell: !isGameOver && isLastGuessIncorrect
+        })}>
+            {renderGameStatus()}
         </div>
       </header>
       <main>
@@ -78,9 +119,9 @@ function App() {
           <div className='characters-container'>
             {generateAlphabetEl}
           </div>
-          <div className='new-game-container'>
+          {isGameOver &&<div className='new-game-container'>
             <button type="button" className='new-game-button'>New Game</button>
-          </div>
+          </div>}
         </section>
       </main>
     </>
