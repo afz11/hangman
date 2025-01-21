@@ -166,8 +166,12 @@ div.language.lost::before {
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
   color: #1E1E1E;
-
   border-radius: 4px;
+}
+
+.character:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .new-game-container {
@@ -205,4 +209,17 @@ div.language.lost::before {
 
 .incorrect {
   background: #EC5D49;
+}
+
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
