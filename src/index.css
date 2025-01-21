@@ -139,6 +139,10 @@ div.language.lost::before {
   border-bottom: 1px solid #F9F4DA;
 }
 
+.missed-letter {
+  color: #EC5D49;
+}
+
 .characters-container {
   width: 500px;
   display: flex;

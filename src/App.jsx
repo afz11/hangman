@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { languages } from './languages';
 import { clsx } from 'clsx';
-import { getFarewellText } from './utils';
+import { getFarewellText, getRandomWord } from './utils';
+import { words } from './words';
+import Confetti from 'react-confetti'
 
 
 function App() {
   // State values
-  const [currentWord, setCurrentWord] = useState('react')
+  const [currentWord, setCurrentWord] = useState(() => getRandomWord())
   const [guessedLetters, setGuessedLetters] = useState([])
 
   // Derived values
@@ -18,13 +20,14 @@ function App() {
   const lastGuessedLetter = guessedLetters[guessedLetters.length - 1]
   const isLastGuessIncorrect = lastGuessedLetter && !currentWord.includes(lastGuessedLetter)
 
-  if(isGameOver) {
-
-  }
-
   
   // Static values
   const alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
+  function resetGame() {
+    setCurrentWord(() => getRandomWord())
+    setGuessedLetters([])
+  }
 
   
   // generate Language elements
@@ -44,7 +47,21 @@ function App() {
     
     // Generate Current word elements
     const secretWord = currentWord.split('')
-    .map((letter, index) => <div className="letter" key={index}>{guessedLetters.includes(letter) ? letter.toLocaleUpperCase() : ""}</div>)
+    .map((letter, index) => {
+      const shouldRevealLetter = isGameOver || guessedLetters.includes(letter)
+      const letterClassName = clsx(
+        'letter', 
+        isGameLost && !guessedLetters.includes(letter) && "missed-letter"
+      )
+      return (
+        <div className={letterClassName} key={index}>
+          { shouldRevealLetter ? letter.toLocaleUpperCase() : ""}
+        </div>
+      )
+
+        
+
+    })
     
     // Generate Alphabets / Buttons
     const generateAlphabetEl = alphabet.split('').map(letter => {
@@ -77,6 +94,8 @@ function App() {
         )
       }
 
+
+
       function renderGameStatus() {
         if (!isGameOver && isLastGuessIncorrect) {
             return <h1 className='info-'>{getFarewellText(languages[wrongGuessCounts - 1].name)}</h1>
@@ -103,6 +122,7 @@ function App() {
 
       return (
     <>
+    {isGameWon && <Confetti recycle={false} numberOfPieces={1000}/>}
       <header>
         <h1>Assembly: Endgame</h1>
         <p>Guess the word in under 8 attempts to keep the programming world safe from Assembly!</p>
@@ -152,7 +172,7 @@ function App() {
             {generateAlphabetEl}
           </div>
           {isGameOver &&<div className='new-game-container'>
-            <button type="button" className='new-game-button'>New Game</button>
+            <button type="button" className='new-game-button' onClick={resetGame}>New Game</button>
           </div>}
         </section>
 
