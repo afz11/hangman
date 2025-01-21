@@ -39,8 +39,13 @@ function App() {
           <div className="letter"></div>
           <div className="letter"></div>
         </section>
-        <section className='characters-container'>
-          {generateAlphabetEl}
+        <section className='keyboard-container'>
+          <div className='characters-container'>
+            {generateAlphabetEl}
+          </div>
+          <div className='new-game-container'>
+            <button type="button" className='new-game-button'>New Game</button>
+          </div>
         </section>
       </main>
     </>
