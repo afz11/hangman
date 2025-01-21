@@ -78,11 +78,9 @@ main {
   text-align: center;
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
-  padding: 5px;
-  background-color: rgb(205, 207, 189);
-  margin-right: 1px;
-  margin-bottom: 1px;
-  color: #1E1E1E;
+  padding: 4px;
+  margin-right: 2px;
+  margin-bottom: 2px;
   border-radius: 3px;
   
 }
@@ -98,6 +96,8 @@ main {
 .letter {
   width: 40px;
   height: 40px;
+  line-height: 40px;
+  text-align: center;
   margin-right: 2px;
   background-color: #323232;
   border-bottom: 1px solid #F9F4DA;
@@ -163,4 +163,12 @@ main {
 
   display: none;
 
+}
+
+.correct {
+  background: #10A95B;
+}
+
+.incorrect {
+  background: #EC5D49;
 }
