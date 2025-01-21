@@ -4,10 +4,17 @@ import { clsx } from 'clsx';
 
 
 function App() {
+  // State values
   const [currentWord, setCurrentWord] = useState('react')
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz'
   const [guessedLetters, setGuessedLetters] = useState([])
 
+  // Derived values
+  let wrongGuessCounts = guessedLetters.filter(letter => !currentWord.includes(letter)).length
+  
+
+  
+  // Static values
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
   
   // generate Language elements
@@ -19,7 +26,7 @@ function App() {
     
     // Generate Current word elements
     const secretWord = currentWord.split('')
-    .map((letter, index) => <div className="letter" key={index}>{letter.toLocaleUpperCase()}</div>)
+    .map((letter, index) => <div className="letter" key={index}>{guessedLetters.includes(letter) ? letter.toLocaleUpperCase() : ""}</div>)
     
     // Generate Alphabets / Buttons
     const generateAlphabetEl = alphabet.split('').map(letter => {
@@ -39,10 +46,7 @@ function App() {
         value={letter.toUpperCase()}
         onClick={() => addGuessedLetter(letter)}
       >{letter.toUpperCase()}</button>
-      )
-    }
-  )
-      
+      )})      
       
       function addGuessedLetter(letter) {
         setGuessedLetters(prevGuess => 
@@ -51,11 +55,7 @@ function App() {
           [...prevGuess, letter] 
         )
       }
-
-
-
-      
-      
+ 
       return (
     <>
       <header>
